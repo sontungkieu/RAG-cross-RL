@@ -1,0 +1,175 @@
+\section{Scope and Problem Framing}
+
+\subsection{Deliberate Scope}
+
+The project is \textbf{deliberately limited to simulation} in order to increase feasibility and reduce hardware dependence.
+This means:
+\begin{itemize}
+  \item the required deliverable is a working pipeline on standard simulation benchmarks;
+  \item real-robot deployment or sim-to-real transfer is not a first-round requirement;
+  \item deployment on SO-101 or LeRobot is treated as future work.
+\end{itemize}
+
+\subsection{Core Contribution}
+
+The core contribution is:
+\begin{quote}
+  \textbf{A retrieval-conditioned multimodal reward model that generates dense progress signals for long-horizon robot manipulation in simulation.}
+\end{quote}
+
+What is \textbf{not} part of the core contribution:
+\begin{itemize}
+  \item no training of a foundation model or VLA from scratch;
+  \item no requirement for direct continuous action generation from retrieved evidence;
+  \item no attempt to prove real-world deployability in the first phase.
+\end{itemize}
+
+\section{Proposed Method}
+
+\subsection{Problem Setup}
+
+At each time step $t$, the robot observes the current state $o_t$
+(image, state, or both) and the task instruction $g$.
+The system also has access to a memory bank $\mathcal{M}$ containing:
+\begin{itemize}
+  \item instruction or manual text;
+  \item stage descriptions;
+  \item video clips or sub-trajectory demonstrations;
+  \item metadata about the task, object, and outcome.
+\end{itemize}
+
+The reward function to be learned is:
+\[
+r_t = f_\theta(o_t, g, \text{Retrieve}(o_t, g, \mathcal{M}))
+\]
+where \texttt{Retrieve} returns the most relevant context for the current state.
+
+\subsection{Overall Architecture}
+
+The proposed pipeline has four modules:
+\begin{enumerate}
+  \item \textbf{Memory construction}: normalize instruction/manual text, stage labels, and segment videos into clips or sub-trajectories.
+  \item \textbf{Retriever}: encode the current observation and query top-$k$ relevant evidence.
+  \item \textbf{Reward model}: fuse the current observation with retrieved context to estimate progress score or pairwise preference.
+  \item \textbf{Policy learner}: use the resulting reward for offline RL, trajectory ranking, or policy selection.
+\end{enumerate}
+
+\subsection{Memory Bank Design}
+
+The memory bank should be organized by \textbf{stage} rather than only by full episodes.
+A minimal schema for each entry includes:
+\begin{itemize}
+  \item \texttt{task\_id}, \texttt{stage\_id}, \texttt{instruction}, \texttt{manual\_snippet};
+  \item image or clip embeddings;
+  \item text embeddings;
+  \item outcome labels or relative progress annotations.
+\end{itemize}
+
+This design directly supports the key research question on retrieval granularity:
+episode-level versus stage-level versus sub-trajectory retrieval.
+
+\subsection{Reward Model}
+
+Two feasible implementation variants are:
+\begin{itemize}
+  \item \textbf{Progress regression}: predict a continuous or discretized progress score.
+  \item \textbf{Pairwise ranking / preference}: given two states or two clips, predict which one is closer to task completion.
+\end{itemize}
+
+In the most practical student-scale version of the project, the pretrained encoder remains frozen
+or is only lightly fine-tuned, while the main trainable component is the reward head.
+This keeps compute manageable and avoids training a large VLM from scratch.
+
+\subsection{How Reward Is Used for Policy Learning}
+
+Three integration levels are possible, in increasing order of ambition:
+\begin{enumerate}
+  \item use reward first for \textbf{trajectory evaluation} and reward-quality analysis;
+  \item use reward for \textbf{offline RL} or \textbf{policy selection};
+  \item if resources permit, use reward for post-training a small policy or VLA.
+\end{enumerate}
+
+For this proposal, level (2) is the main target because it is strong enough academically while remaining feasible.
+
+\section{Experimental Design}
+
+\subsection{Proposed Benchmarks}
+
+\begin{itemize}
+  \item \textbf{Primary benchmark}: \textit{LIBERO} \citep{liu2023libero}, because it is well aligned with long-horizon transfer and multi-task manipulation.
+  \item \textbf{Secondary benchmark}: \textit{ManiSkill2/3} \citep{gu2022maniskill2, tao2024maniskill3} when additional evaluation is needed for simulator throughput, task diversity, or scaling behavior.
+\end{itemize}
+
+\subsection{Baselines}
+
+\begin{enumerate}
+  \item \textbf{Sparse reward only}.
+  \item \textbf{Reward model without retrieval}.
+  \item \textbf{Retrieval-only guidance} without reward modeling.
+  \item \textbf{Retrieval-Augmented Reward Model} (proposed method).
+\end{enumerate}
+
+\subsection{Required Ablations}
+
+\begin{itemize}
+  \item retrieval source: text only, video only, or multimodal;
+  \item granularity: episode, stage, or sub-trajectory;
+  \item number of retrieved context items top-$k$;
+  \item reward formulation: regression versus ranking;
+  \item evaluation split: in-distribution versus OOD.
+\end{itemize}
+
+\subsection{Evaluation Metrics}
+
+\begin{itemize}
+  \item task-level \textit{success rate};
+  \item \textit{normalized return} or cumulative reward;
+  \item \textit{sample efficiency};
+  \item correlation between predicted reward and ground-truth progress or human preference;
+  \item robustness on OOD splits;
+  \item retrieval and reward-inference latency.
+\end{itemize}
+
+\section{Feasibility Assessment}
+
+\subsection{Technical Feasibility}
+
+If the project tries to combine real robots, OOD detection, retrieval, multimodal reasoning,
+action guidance, and hardware deployment in a single phase, the risk becomes too high.
+By contrast, \textbf{simulation-first + reward modeling is a realistic scope} because:
+\begin{itemize}
+  \item the benchmarks and data pipelines already exist;
+  \item no foundation model pretraining is required;
+  \item retrieval and reward modeling can be debugged as separate modules;
+  \item evaluation can be standardized through benchmark suites and ablations.
+\end{itemize}
+
+\subsection{Estimated Compute Requirements}
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \begin{tabularx}{\textwidth}{p{2.8cm}p{2.8cm}Y Y}
+    \toprule
+    Resource tier & Suggested configuration & What it supports & Notes \\
+    \midrule
+    Minimum & 1 GPU with 12--16GB VRAM, 32GB RAM, 100--200GB SSD & Retrieval prototype, small reward head, subset tasks, and basic ablations & Best with frozen encoders and fewer tasks \\
+    Recommended & 1 GPU with 24GB VRAM, 64GB RAM, 200--500GB SSD & Full simulation-only pipeline, more seeds, stage-level retrieval, and offline RL & This is the most appropriate target for the current proposal \\
+    Comfortable & A100 40/80GB or equivalent, 64GB+ RAM & Larger sweeps, bigger batch sizes, stronger policy backbones, or extra benchmark coverage & Not required for the core contribution \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Estimated compute requirements by ambition level.}
+\end{table}
+
+Under the ``recommended'' configuration, a compact research cycle typically stays within a few GPU-days:
+memory-bank preprocessing in a few hours to one day, reward training in a few hours,
+policy training in roughly one to three days, and evaluation or ablation in another one to two days.
+
+\subsection{Risks and Mitigation}
+
+\begin{enumerate}
+  \item \textbf{Incorrect retrieval context}: use confidence scoring and a fallback to the base reward model when evidence is unreliable.
+  \item \textbf{Benchmark overfitting}: include OOD splits and at least one secondary benchmark.
+  \item \textbf{Compute overruns}: keep encoders frozen, avoid fine-tuning large VLAs, and prioritize stage-level retrieval first.
+  \item \textbf{Tasks are too difficult at full scale}: begin with tasks that have clear stage decomposition, then expand gradually.
+\end{enumerate}

@@ -1,0 +1,7 @@
+[project]
+name = "rag-cross-rl"
+version = "0.1.0"
+description = "RAG-cross-RL workspace managed with uv."
+readme = "README.md"
+requires-python = ">=3.10,<3.11"
+dependencies = []

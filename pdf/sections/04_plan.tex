@@ -1,0 +1,44 @@
+\section{Expected Contributions}
+
+\begin{itemize}
+  \item A clear formulation of \textbf{retrieval-conditioned reward modeling} for robot manipulation.
+  \item An experimental protocol for measuring the effect of retrieval on both reward quality and downstream policy quality.
+  \item A systematic analysis of \textbf{retrieval granularity} in long-horizon manipulation.
+  \item A simulation-first baseline that can later support extensions to real robots, VLAs, or world models.
+\end{itemize}
+
+\section{Proposed Execution Roadmap}
+
+\begin{longtable}{p{2.1cm}p{4.0cm}p{7.6cm}}
+  \toprule
+  Phase & Goal & Expected output \\
+  \midrule
+  P1 & Lock benchmark and task suite & Choose `LIBERO` as the primary benchmark, define OOD splits, and finalize baselines \\
+  P2 & Build the memory bank & Retrieval dataset with text, stages, clips/sub-trajectories, and a vector index \\
+  P3 & Train the reward model & Retrieval-conditioned reward head or ranking model \\
+  P4 & Integrate with policy learning & Offline RL or policy-selection results with success rate and sample efficiency \\
+  P5 & Analyze and write up & Ablations, retrieval failure analysis, compute cost, limitations, and future work \\
+  \bottomrule
+\end{longtable}
+
+\section{Future Extensions}
+
+Once the core contribution is stable, the project can expand along three directions:
+\begin{enumerate}
+  \item \textbf{Real robots / LeRobot / SO-101}: keep the present proposal as the method layer, with hardware used later only for deployability validation.
+  \item \textbf{Connection to VLA}: use the reward model as an evaluation or post-training layer for backbones such as OpenVLA or OpenVLA-OFT \citep{kim2024openvla, wang2025openvlaoft}.
+  \item \textbf{Connection to world models}: replace retrieval-conditioned reward on the current state with reward over imagined rollouts, moving closer to the VLA-RFT direction \citep{li2025vlarft}.
+\end{enumerate}
+
+\section{Conclusion}
+
+The topic ``Retrieval-Augmented Reward Modeling for Long-Horizon Robot Manipulation in Simulation''
+is \textbf{sufficiently novel if framed correctly}, \textbf{feasible if kept simulation-first},
+and \textbf{well aligned with active research trends} in embodied retrieval,
+demonstration-conditioned learning, and robotics reward modeling.
+
+The key is not to claim a broad ``robotic RAG'' system,
+but to show that multimodal retrieval can make reward denser,
+more reliable, and more useful for long-horizon manipulation learning in simulation.
+If that is demonstrated convincingly, the resulting system becomes a solid base
+for later extensions toward VLAs, world models, or real robots.

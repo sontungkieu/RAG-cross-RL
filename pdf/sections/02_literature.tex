@@ -1,0 +1,108 @@
+\section{Research Landscape and Literature Gap}
+
+\subsection{Embodied Retrieval and Memory-Augmented Agents}
+
+Embodied retrieval is no longer novel at the conceptual level.
+\citet{liu2024embodiedrag} introduce \textit{Embodied-RAG} as a non-parametric memory
+that lets embodied agents retrieve past experience to solve new situations.
+\citet{li2025embodiedrag} push this direction toward \textit{scene-graph retrieval}
+for spatial reasoning and planning in 3D environments.
+\citet{xu2024raea} go further by using retrieval over a \textit{policy memory bank}
+to support embodied action generation.
+
+The lesson from this line of work is clear: retrieval is already a real
+\textit{memory/planning} mechanism in embodied AI, but most existing work focuses on
+high-level decision making or action generation rather than reward modeling for continuous manipulation.
+
+\subsection{Retrieval from Demonstrations and Human Video}
+
+Works such as \textit{DINOBot} \citep{johns2024dinobot}, \textit{STRAP} \citep{huang2025strap},
+and \textit{Vid2Robot} \citep{jain2024vid2robot} show that retrieval or conditioning with
+demonstrations and human videos is a practical direction for robot learning.
+\textit{STRAP} is especially relevant here because it suggests that
+\textit{sub-trajectory} retrieval can outperform full-episode retrieval for transfer and adaptation.
+
+However, these methods mainly use retrieved evidence to support
+\textit{policy execution}, \textit{alignment}, or \textit{behavior cloning}.
+Reward is typically secondary rather than the primary contribution.
+
+\subsection{Reward Modeling for Robotics}
+
+Reward modeling in robotics is evolving quickly.
+\citet{ma2024vlmfeedback} show that VLM feedback can support
+\textit{real-world offline RL} without heavily engineered manual reward.
+\citet{yang2025rgvlm} extend this line with \textit{retrieval-guided VLM reward generation}
+for robotic offline RL.
+By 2026, \citet{song2026roboreward} turn reward modeling itself into a benchmarked research problem with a dedicated robotics reward model.
+
+This line of work proves that reward modeling is meaningful,
+but simply saying ``use a multimodal model to synthesize dense reward'' is not novel enough anymore.
+The open question is how to connect a reward model with an \textit{external memory}
+that is rich enough, stage-aware enough, and reliable enough under OOD conditions.
+
+\subsection{Benchmarks and Simulation Infrastructure}
+
+A simulation-only project is academically valid if it is grounded in the right benchmarks.
+\citet{liu2023libero} introduce \textit{LIBERO} for lifelong robot learning and transfer across long-horizon tasks.
+\citet{gu2022maniskill2} and \citet{tao2024maniskill3} provide scalable manipulation simulators and efficient data pipelines.
+Therefore, a simulation-first scope does not weaken the methodologically central contribution,
+as long as the benchmark choice, baselines, and ablations are rigorous.
+
+\subsection{Compact Comparison Table}
+
+\begin{table}[htbp]
+  \centering
+  \small
+  \begin{tabularx}{\textwidth}{p{2.4cm}p{2.7cm}Y Y Y}
+    \toprule
+    Work family & Representative papers & Is retrieval central? & Is reward modeling central? & Remaining gap relative to the proposed topic \\
+    \midrule
+    Embodied memory/planning & Embodied-RAG, EmbodiedRAG, RAEA & Yes & Usually no & Strong on planning and memory, but not centered on dense reward for continuous manipulation \\
+    Demo/video retrieval & DINOBot, STRAP, Vid2Robot & Yes & Usually no & Strong on action and policy transfer, but does not standardize retrieval-conditioned reward \\
+    Robotics reward modeling & VLM Feedback, RG-VLM, RoboReward & Sometimes & Yes & Does not yet fully exploit multi-source external memory for OOD stage-aware reward \\
+    Proposed topic & Retrieval-Augmented Reward Modeling & Yes & Yes & Connects multimodal retrieval with reward modeling for long-horizon manipulation in simulation \\
+    \bottomrule
+  \end{tabularx}
+  \caption{Position of the proposed topic relative to the current research landscape.}
+\end{table}
+
+\section{Novelty Assessment}
+
+\subsection{What Is Not Novel}
+
+\begin{itemize}
+  \item ``Embodied RAG for robots'' is no longer novel as a slogan because retrieval for embodied agents is already an established direction \citep{liu2024embodiedrag, li2025embodiedrag, xu2024raea}.
+  \item ``Multimodal reward modeling for robots'' is also no longer an untouched space, since several recent works already use VLMs or LVLMs for robotic feedback and reward \citep{ma2024vlmfeedback, yang2025rgvlm, song2026roboreward}.
+\end{itemize}
+
+\subsection{What Can Still Be Novel If the Problem Is Framed Correctly}
+
+\begin{itemize}
+  \item Make \textbf{reward modeling} the central contribution, with retrieval acting as a controlled external memory.
+  \item Retrieve from \textbf{multiple sources}, including instruction/manual text, stage descriptions, and demonstration clips rather than a single context source.
+  \item Emphasize \textbf{stage-aware dense reward} for \textbf{long-horizon} manipulation and evaluate explicitly on \textbf{OOD splits}.
+  \item Treat retrieval granularity at the \textbf{sub-trajectory/stage} level as a genuine research variable rather than an implementation detail.
+\end{itemize}
+
+\subsection{Novelty Conclusion}
+
+If the topic is framed too broadly, the novelty is only moderate.
+If it is framed as:
+\begin{quote}
+  \textit{Retrieval-Augmented Reward Modeling for Long-Horizon Robot Manipulation in Simulation}
+\end{quote}
+then the novelty becomes more defensible because the contribution is anchored to
+a concrete mechanism, a concrete setting, and a concrete evaluation protocol.
+
+\section{Current Development Directions in the Community}
+
+The current community landscape can be summarized in four directions:
+\begin{enumerate}
+  \item \textbf{Embodied memory and planning}: retrieval supports reasoning, memory, scene understanding, or planning.
+  \item \textbf{Demonstration-conditioned control}: retrieved demonstrations, sub-trajectories, or human videos support action generation and transfer.
+  \item \textbf{Reward modeling with foundation models}: VLMs and LVLMs are used to produce feedback, reward, or reward benchmarks.
+  \item \textbf{Connection to VLA/world models}: works such as OpenVLA \citep{kim2024openvla}, OpenVLA-OFT \citep{wang2025openvlaoft}, and VLA-RFT \citep{li2025vlarft} show a trend toward integrating reward, RL, and imagined rollouts more closely with VLA systems.
+\end{enumerate}
+
+This proposal sits at the intersection of directions (2) and (3),
+while preserving a natural upgrade path toward direction (4) once the reward pipeline is stable.

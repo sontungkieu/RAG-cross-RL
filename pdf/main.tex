@@ -1,0 +1,83 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{mathptmx}
+\usepackage[scaled=0.92]{helvet}
+\usepackage{courier}
+
+\usepackage[a4paper,margin=2.4cm]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{microtype}
+\usepackage{setspace}
+\usepackage{parskip}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{natbib}
+
+\setstretch{1.12}
+\setlist[itemize]{leftmargin=1.5em}
+\setlist[enumerate]{leftmargin=1.7em}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!50!black,
+  citecolor=blue!50!black,
+  urlcolor=blue!50!black,
+  pdftitle={Detailed Proposal for Retrieval-Augmented Reward Modeling},
+  pdfauthor={RAG-cross-RL}
+}
+
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+
+\title{\textbf{Detailed Proposal}\\[0.4em]
+Retrieval-Augmented Reward Modeling\\
+for \textit{long-horizon robot manipulation} in simulation}
+\author{Prepared in the \texttt{RAG-cross-RL} repository}
+\date{March 31, 2026}
+
+\begin{document}
+
+\hypersetup{pageanchor=false}
+\begin{titlepage}
+  \centering
+  {\Large \textbf{RAG-cross-RL}}\\[1.2cm]
+  {\huge \textbf{Detailed Proposal}}\\[0.5cm]
+  {\LARGE Retrieval-Augmented Reward Modeling\\
+  for \textit{long-horizon robot manipulation} in simulation}\\[1.4cm]
+  {\large Research planning document}\\[0.3cm]
+  {\large Prepared on March 31, 2026}\\[1.6cm]
+
+  \begin{minipage}{0.88\textwidth}
+    \small
+    \textbf{Positioning.} This proposal focuses on retrieving multimodal context
+    (video demonstrations, stage descriptions, and manual/instruction text)
+    to help a reward model generate denser progress signals for robot manipulation in simulation.
+    The scope is intentionally \textit{simulation-first}: it avoids dependence on real hardware
+    in the initial phase while preserving a clear upgrade path toward VLA- or world-model-based systems.
+  \end{minipage}
+
+  \vfill
+  {\large Repo: \texttt{/home/tung/RAG-cross-RL}}\\[0.3cm]
+  {\large Main output file: \texttt{pdf/main.pdf}}
+\end{titlepage}
+\clearpage
+\hypersetup{pageanchor=true}
+
+\tableofcontents
+\newpage
+
+\input{sections/01_overview.tex}
+\input{sections/02_literature.tex}
+\input{sections/03_method.tex}
+\input{sections/04_plan.tex}
+
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+\end{document}

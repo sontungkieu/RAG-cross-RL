@@ -1,0 +1,64 @@
+\section{Executive Summary}
+
+The project is centered on \textbf{retrieval-augmented reward modeling} for
+\textit{long-horizon robot manipulation} in simulation. The core idea is simple:
+instead of letting a policy rely only on \textit{sparse reward} or hand-crafted shaping,
+the system retrieves relevant evidence from a multimodal \textit{external memory}
+containing video demonstrations, stage descriptions, instructions, and manual text.
+The retrieved context is then fed into a reward model that produces
+\textit{dense progress signals} or stage-aware scores, which can in turn support
+offline RL, policy selection, or trajectory evaluation.
+
+The proposal is careful not to sell this as a vague ``Embodied RAG'' slogan,
+because both retrieval for embodied agents and reward modeling for robotics already
+exist as active research directions. Instead, the intended contribution is narrower and easier to evaluate:
+\begin{itemize}
+  \item use multi-source retrieval to improve \textbf{reward quality} in long-horizon manipulation;
+  \item focus on \textbf{OOD states}, \textbf{stage-aware feedback}, and \textbf{sub-trajectory retrieval};
+  \item evaluate on \textbf{standard simulation benchmarks} rather than claiming a full real-robot system.
+\end{itemize}
+
+\section{Background and Motivation}
+
+In robot manipulation, especially for multi-stage tasks such as opening a drawer and then placing an object,
+sparse reward often makes learning inefficient and unstable. Hand-crafted dense reward can partially fix this,
+but it is expensive to design, difficult to scale, and brittle when the task or environment changes.
+In parallel, retrieval-augmented systems have shown value across many domains whenever the agent needs
+external knowledge to handle rare or out-of-distribution situations.
+
+At the same time, robotics research has moved strongly along three relevant directions:
+\begin{enumerate}
+  \item retrieval/memory for embodied agents and planning \citep{liu2024embodiedrag, li2025embodiedrag, xu2024raea};
+  \item retrieval from demonstrations or human videos for control and generalization \citep{johns2024dinobot, huang2025strap, jain2024vid2robot};
+  \item reward modeling with vision-language models to reduce dependence on manual reward design \citep{ma2024vlmfeedback, yang2025rgvlm, song2026roboreward}.
+\end{enumerate}
+
+The still-open gap lies at the intersection of those directions:
+\textbf{using multimodal retrieval to enrich reward signals for continuous manipulation},
+especially under OOD and long-horizon conditions. That is where this proposal places its contribution.
+
+\section{Objectives, Research Questions, and Hypotheses}
+
+\subsection{Objectives}
+
+\begin{itemize}
+  \item Build a retrieval-conditioned reward modeling pipeline for robot manipulation in simulation.
+  \item Measure whether retrieval improves reward quality and policy learning relative to reward models without retrieval.
+  \item Evaluate how robust this approach is on long-horizon tasks and under OOD conditions.
+\end{itemize}
+
+\subsection{Research Questions}
+
+\begin{enumerate}
+  \item Does context retrieved from video demonstrations and instruction/manual text help the reward model estimate task progress more accurately?
+  \item Does retrieval-conditioned reward improve \textit{success rate}, \textit{sample efficiency}, and \textit{OOD generalization} compared with no-retrieval baselines?
+  \item What retrieval granularity is most effective for reward modeling: full episodes, stage-level chunks, or sub-trajectories?
+\end{enumerate}
+
+\subsection{Working Hypotheses}
+
+\begin{itemize}
+  \item \textbf{H1}: Multimodal retrieval helps the reward model distinguish meaningful intermediate progress from misleading states.
+  \item \textbf{H2}: Stage-level or sub-trajectory retrieval is more effective than episode-level retrieval because it reduces context noise.
+  \item \textbf{H3}: The benefit of retrieval is larger on OOD splits and long-horizon tasks than on short, fully in-distribution tasks.
+\end{itemize}

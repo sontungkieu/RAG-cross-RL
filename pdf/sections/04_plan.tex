@@ -2,6 +2,7 @@
 
 \begin{itemize}
   \item A clear formulation of \textbf{retrieval-conditioned reward modeling} for robot manipulation.
+  \item A concrete simulator-derived supervision scheme for reward labels and reward-quality evaluation.
   \item An experimental protocol for measuring the effect of retrieval on both reward quality and downstream policy quality.
   \item A systematic analysis of \textbf{retrieval granularity} in long-horizon manipulation.
   \item A simulation-first baseline that can later support extensions to real robots, VLAs, or world models.
@@ -13,11 +14,11 @@
   \toprule
   Phase & Goal & Expected output \\
   \midrule
-  P1 & Lock benchmark and task suite & Choose `LIBERO` as the primary benchmark, define OOD splits, and finalize baselines \\
-  P2 & Build the memory bank & Retrieval dataset with text, stages, clips/sub-trajectories, and a vector index \\
-  P3 & Train the reward model & Retrieval-conditioned reward head or ranking model \\
-  P4 & Integrate with policy learning & Offline RL or policy-selection results with success rate and sample efficiency \\
-  P5 & Analyze and write up & Ablations, retrieval failure analysis, compute cost, limitations, and future work \\
+  P1 & Lock benchmark, OOD protocol, and supervision sources & Choose `LIBERO` as the primary benchmark, define ID/OOD splits, and map simulator predicates to stage-progress labels \\
+  P2 & Build the memory bank & Retrieval dataset with task instructions, stage descriptions, clips/sub-trajectories, optional manual text, and a vector index \\
+  P3 & Train the reward model & Retrieval-conditioned reward head trained with progress regression and auxiliary pairwise ranking \\
+  P4 & Integrate with policy learning & Offline RL with IQL using learned reward, plus reward-quality diagnostics and downstream policy metrics \\
+  P5 & Analyze and write up & Ablations over context quality, retrieval granularity, OOD robustness, compute cost, and future work \\
   \bottomrule
 \end{longtable}
 

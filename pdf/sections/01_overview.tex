@@ -4,10 +4,12 @@ The project is centered on \textbf{retrieval-augmented reward modeling} for
 \textit{long-horizon robot manipulation} in simulation. The core idea is simple:
 instead of letting a policy rely only on \textit{sparse reward} or hand-crafted shaping,
 the system retrieves relevant evidence from a multimodal \textit{external memory}
-containing video demonstrations, stage descriptions, instructions, and manual text.
+containing video demonstrations, task instructions, stage descriptions, and optionally manual text when available.
 The retrieved context is then fed into a reward model that produces
 \textit{dense progress signals} or stage-aware scores, which can in turn support
-offline RL, policy selection, or trajectory evaluation.
+offline RL, policy selection, or trajectory evaluation. The main training recipe is now
+fully specified: the reward model is supervised primarily with simulator-derived stage progress labels,
+augmented by pairwise ordering labels from successful and failed trajectories, and evaluated downstream with offline RL using IQL.
 
 The proposal is careful not to sell this as a vague ``Embodied RAG'' slogan,
 because both retrieval for embodied agents and reward modeling for robotics already
@@ -43,6 +45,7 @@ especially under OOD and long-horizon conditions. That is where this proposal pl
 
 \begin{itemize}
   \item Build a retrieval-conditioned reward modeling pipeline for robot manipulation in simulation.
+  \item Define a concrete supervision strategy for reward labels using simulator or task-derived pseudo annotations.
   \item Measure whether retrieval improves reward quality and policy learning relative to reward models without retrieval.
   \item Evaluate how robust this approach is on long-horizon tasks and under OOD conditions.
 \end{itemize}
@@ -50,7 +53,7 @@ especially under OOD and long-horizon conditions. That is where this proposal pl
 \subsection{Research Questions}
 
 \begin{enumerate}
-  \item Does context retrieved from video demonstrations and instruction/manual text help the reward model estimate task progress more accurately?
+  \item Does context retrieved from video demonstrations, task instructions, and stage descriptions help the reward model estimate task progress more accurately?
   \item Does retrieval-conditioned reward improve \textit{success rate}, \textit{sample efficiency}, and \textit{OOD generalization} compared with no-retrieval baselines?
   \item What retrieval granularity is most effective for reward modeling: full episodes, stage-level chunks, or sub-trajectories?
 \end{enumerate}

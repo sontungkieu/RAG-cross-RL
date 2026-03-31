@@ -79,7 +79,7 @@ as long as the benchmark choice, baselines, and ablations are rigorous.
 
 \begin{itemize}
   \item Make \textbf{reward modeling} the central contribution, with retrieval acting as a controlled external memory.
-  \item Retrieve from \textbf{multiple sources}, including instruction/manual text, stage descriptions, and demonstration clips rather than a single context source.
+  \item Retrieve from \textbf{multiple sources}, especially task instructions, stage descriptions, and demonstration clips, with manual text treated only as an optional extension.
   \item Emphasize \textbf{stage-aware dense reward} for \textbf{long-horizon} manipulation and evaluate explicitly on \textbf{OOD splits}.
   \item Treat retrieval granularity at the \textbf{sub-trajectory/stage} level as a genuine research variable rather than an implementation detail.
 \end{itemize}

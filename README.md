@@ -1,6 +1,11 @@
 # RAG-cross-RL
 
 Workspace này hiện được dùng để soạn proposal nghiên cứu cho hướng `retrieval-augmented reward modeling` trong robot manipulation mô phỏng.
+Phiên bản proposal hiện tại đã chốt rõ:
+
+- nguồn supervision cho reward từ simulator/task-derived pseudo labels;
+- OOD protocol chính theo object split và layout split;
+- thuật toán downstream chính là offline RL với `IQL`.
 
 ## Cấu trúc chính
 

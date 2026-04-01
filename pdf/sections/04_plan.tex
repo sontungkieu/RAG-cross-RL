@@ -14,6 +14,7 @@
   \toprule
   Phase & Goal & Expected output \\
   \midrule
+  P0 & Build a one-task simulation demo & A retrieval-conditioned progress-estimation prototype with a mini memory bank, top-$k$ retrieval, and visual artifacts for rapid reporting \\
   P1 & Lock benchmark, OOD protocol, and supervision sources & Choose `LIBERO` as the primary benchmark, define ID/OOD splits, and map simulator predicates to stage-progress labels \\
   P2 & Build the memory bank & Retrieval dataset with task instructions, stage descriptions, clips/sub-trajectories, optional manual text, and a vector index \\
   P3 & Train the reward model & Retrieval-conditioned reward head trained with progress regression and auxiliary pairwise ranking \\
@@ -21,6 +22,18 @@
   P5 & Analyze and write up & Ablations over context quality, retrieval granularity, OOD robustness, compute cost, and future work \\
   \bottomrule
 \end{longtable}
+
+\section{Immediate Demo Deliverable}
+
+The near-term deliverable is a compact prototype used to demonstrate execution readiness before full reward-model training.
+The preferred execution path is a short `LIBERO` rollout when the benchmark stack can be initialized quickly under the project environment,
+with a replay-based fallback kept only as a reliability guardrail for rapid reporting.
+It consists of:
+\begin{itemize}
+  \item a demo image showing the query frame, retrieved exemplars, stage labels, and predicted progress;
+  \item a progress plot comparing no-context, random-context, and retrieved-context estimates against oracle temporal progress;
+  \item a short replay GIF or video with predicted progress and retrieved stage information overlaid.
+\end{itemize}
 
 \section{Future Extensions}
 

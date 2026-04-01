@@ -96,6 +96,11 @@ The reward model is trained with one main target and one auxiliary target:
 In the most practical student-scale version of the project, the pretrained encoder remains frozen
 or is only lightly fine-tuned, while the main trainable component is the reward head.
 This keeps compute manageable and avoids training a large VLM from scratch.
+The first implementation prototype will be even lighter:
+before training a reward head, it will use a retrieval-based progress proxy that predicts progress
+by aggregating the progress labels of top-$k$ retrieved stage examples.
+This provides a low-risk debugging path for memory-bank schema, retrieval quality, and progress supervision
+before committing to full reward-head optimization.
 
 \subsection{Primary Downstream Training Recipe}
 

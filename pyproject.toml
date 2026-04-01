@@ -3,5 +3,28 @@ name = "rag-cross-rl"
 version = "0.1.0"
 description = "RAG-cross-RL workspace managed with uv."
 readme = "README.md"
-requires-python = ">=3.10,<3.11"
-dependencies = []
+requires-python = ">=3.8,<3.9"
+dependencies = [
+    "imageio>=2.35.1",
+    "matplotlib>=3.7.5",
+    "numpy>=1.24.4",
+    "pillow>=10.4.0",
+]
+
+[dependency-groups]
+libero = [
+    "bddl==1.0.1",
+    "cloudpickle==2.1.0",
+    "easydict==1.9",
+    "einops==0.4.1",
+    "future==0.18.2",
+    "gym==0.25.2",
+    "hydra-core==1.2.0",
+    "libero",
+    "opencv-python==4.6.0.66",
+    "robosuite==1.4.0",
+    "termcolor>=2.4.0",
+]
+
+[tool.uv.sources]
+libero = { git = "https://github.com/Lifelong-Robot-Learning/LIBERO.git" }
